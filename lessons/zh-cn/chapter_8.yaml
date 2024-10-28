@@ -23,14 +23,14 @@
     * `*mut T` - 指向可以更改的 T 类型数据的指针。
 
 
-    指针可以与数字相互转换（例如`usize`）。    
+    指针可以与数字相互转换（例如 `usize`）。    
 
     指针可以使用 *unsafe* 代码访问数据（稍后会详细介绍）。
 
 
     内存细节： 
-      * Rust中的引用在用法上与 C 中的指针非常相似，但在如何存储和传递给其他函数上有更多的编译时间限制。
-      * Rust中的指针类似于 C 中的指针，它表示一个可以复制或传递的数字，甚至可以转换为数字类型，可以将其修改为数字以进行指针数学运算。
+      * Rust 中的引用在用法上与 C 中的指针非常相似，但在如何存储和传递给其他函数上有更多的编译时限制。
+      * Rust 中的指针类似于 C 中的指针，它表示一个可以复制或传递的数字，甚至可以转换为数字类型，可以将其修改为数字以进行指针数学运算。
 - title: 解引用
   content_markdown: |
     访问或操作 由*引用*（例如`&i32`）指向的数据的过程称为*解除引用*。             
@@ -58,12 +58,12 @@
     ```
 
     内存细节:
-      - 因为 i32 是实现了 `Copy` 特性的原始类型，堆栈上变量 `a` 的字节被复制到变量 `b` 的字节中。
+      - 因为 i32 是实现了 `Copy` trait 的原始类型，堆栈上变量 `a` 的字节被复制到变量 `b` 的字节中。
 - title: 运算符 .
   code: >-
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=struct%20Foo%20%7B%0A%20%20%20%20value%3A%20i32%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20f%20%3D%20Foo%20%7B%20value%3A%2042%20%7D%3B%0A%20%20%20%20let%20ref_ref_ref_f%20%3D%20%26%26%26f%3B%0A%20%20%20%20println!(%22%7B%7D%22%2C%20ref_ref_ref_f.value)%3B%0A%7D
   content_markdown: >
-    `.`运算符用于访问引用的字段和方法，它的工作原理更加巧妙。
+    `.` 运算符用于访问引用的字段和方法，它的工作原理更加巧妙。
 
 
     ```rust
@@ -76,7 +76,7 @@
 
     ```
 
-    哇，为什么我们不需要在`ref_ref_ref_f`之前添加`***`？这是因为 `.` 运算符会做一些列自动解引用操作。
+    哇，为什么我们不需要在 `ref_ref_ref_f` 之前添加 `***`？这是因为 `.` 运算符会做一些列自动解引用操作。
     最后一行由编译器自动转换为以下内容。
 
     ```rust
@@ -91,11 +91,9 @@
   content_markdown: >
     除了能够使用`&`运算符创建对现有类型数据的引用之外, Rust 给我们提供了能够创建称为*智能指针*的*类引用*结构。   
 
-    我们可以在高层次上将引用视为一种类型，它使我们能够访问另一种类型. 
-    智能指针的行为与普通引用不同，因为它们基于程序员编写的内部逻辑进行操作. 
-    作为程序员的你就是*智能*的一部分。  
+    我们可以在高层次上将引用视为一种类型，它使我们能够访问另一种类型。智能指针的行为与普通引用不同，因为它们基于程序员编写的内部逻辑进行操作。作为程序员的你就是*智能*的一部分。  
 
-    通常，智能指针实现了 `Deref`、`DerefMut` 和 `Drop` 特征，以指定当使用 `*` 和 `.` 运算符时解引用应该触发的逻辑。
+    通常，智能指针实现了 `Deref`、`DerefMut` 和 `Drop` 这些 trait，以指定当使用 `*` 和 `.` 运算符时解引用应该触发的逻辑。
 
 - title: 智能不安全代码
   code: >-
@@ -106,9 +104,9 @@
     什么是不安全代码? 不安全代码的行为与普通 Rust 完全一样，除了一些 Rust 编译器无法保证的功能。    
 
     不安全代码的主要功能是*解引用指针*。
-    这意味着将*原始指针*指向内存中的某个位置并声明“此处存在数据结构！” 并将其转换为您可以使用的数据表示（例如将`*const u8` 转换为`u8`）。
+    这意味着将*原始指针*指向内存中的某个位置并声明“此处存在数据结构！” 并将其转换为您可以使用的数据表示（例如将 `*const u8` 转换为 `u8`）。
     Rust 无法跟踪写入内存的每个字节的含义。
-     因为 Rust 不能保证在用作 *指针* 的任意数字上存在什么，所以它将解引用放在一个 `unsafe { ... }` 块中。
+    因为 Rust 不能保证在用作 *指针* 的任意数字上存在什么，所以它将解引用放在一个 `unsafe { ... }` 块中。
 
     智能指针广泛地被用来*解引用指针*，它们的作用得到了很好的证明。
 
@@ -119,13 +117,13 @@
     想一想一些我们已经见过的智能指针，例如 `Vec<T>` 和 `String`。   
 
 
-    `Vec<T>` 是一个智能指针，它只拥有一些字节的内存区域。 
+    `Vec<T>` 是一个智能指针，它只拥有存储了一些字节的内存区域。
     Rust 编译器不知道这些字节中存在着什么。
     智能指针解释从它管理的内存区域获取数据意味着什么，跟踪这些字节中的数据结构开始和结束的位置，最后将指针解引用到数据结构中，
-    成为一个漂亮干净的可以阅读的接口供我们使用（例如`my_vec[3]`）。   
+    成为一个漂亮干净的可以阅读的接口供我们使用（例如 `my_vec[3]`）。
 
 
-    类似地，`String` 跟踪字节的内存区域，并以编程方式将写入其中的内容限制为始终有效的 `utf-8`，并帮助将该内存区域解引用为类型 `&str`。   
+    类似地，`String` 跟踪字节的内存区域，并以编程方式将写入其中的内容限制为始终有效的 `utf-8`，并帮助将该内存区域解引用为类型 `&str`。
 
 
     这两种数据结构都使用不安全的解引用指针来完成它们的工作。   
@@ -133,9 +131,9 @@
 
     内存细节：   
 
-    * Rust 有一个相当于 C 的 `malloc`方法，
-     [alloc](https://doc.rust-lang.org/std/alloc/fn.alloc.html) 和 [Layout](https://doc.rust-lang.org/std/alloc/struct.Layout.html ) 
-     来获取你自己管理的内存区域。
+    * Rust 有一个相当于 C 的 `malloc` 方法，即
+     [alloc](https://doc.rust-lang.org/std/alloc/fn.alloc.html) 和 [Layout](https://doc.rust-lang.org/std/alloc/struct.Layout.html)，
+     用于获取你自己管理的内存区域。
 
 - title: 堆分配内存
   code: >-
@@ -149,13 +147,13 @@
   code: >-
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=use%20core%3A%3Afmt%3A%3ADisplay%3B%0Ause%20std%3A%3Aerror%3A%3AError%3B%0A%0Astruct%20Pie%3B%0A%0A%23%5Bderive(Debug)%5D%0Astruct%20NotFreshError%3B%0A%0Aimpl%20Display%20for%20NotFreshError%20%7B%0A%20%20%20%20fn%20fmt(%26self%2C%20f%3A%20%26mut%20std%3A%3Afmt%3A%3AFormatter%3C'_%3E)%20-%3E%20std%3A%3Afmt%3A%3AResult%20%7B%0A%20%20%20%20%20%20%20%20write!(f%2C%20%22This%20pie%20is%20not%20fresh!%22)%0A%20%20%20%20%7D%0A%7D%0A%0Aimpl%20Error%20for%20NotFreshError%20%7B%7D%0A%0Aimpl%20Pie%20%7B%0A%20%20%20%20fn%20eat(%26self)%20-%3E%20Result%3C()%2C%20Box%3Cdyn%20Error%3E%3E%20%7B%0A%20%20%20%20%20%20%20%20Err(Box%3A%3Anew(NotFreshError))%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20main()%20-%3E%20Result%3C()%2C%20Box%3Cdyn%20Error%3E%3E%20%7B%0A%20%20%20%20let%20heap_pie%20%3D%20Box%3A%3Anew(Pie)%3B%0A%20%20%20%20heap_pie.eat()%3F%3B%0A%20%20%20%20Ok(())%0A%7D%0A
   content_markdown: >
-    Rust可能有过多的错误表示方法，但标准库有一个通用特性 `std::error::Error` 来描述错误。     
+    Rust 可能有过多的错误表示方法，但标准库有一个通用 trait 即 `std::error::Error` 来描述错误。     
 
 
     使用智能指针“Box”，我们可以使用类型`Box<dyn std::error::Error>`作为常见的返回错误类型，因为它允许我们在堆上、高级别的传播错误，而不必知道特定的类型。     
 
 
-    在 Rust 之旅的早期，我们了解到 `main` 可以返回一个错误。我们现在可以返回一个类型，该类型能够描述我们程序中可能发生的几乎任何类型的错误，只要错误的数据结构实现了 Rust 的通用`Error`特征。
+    在 Rust 之旅的早期，我们了解到 `main` 可以返回一个错误。我们现在可以返回一个类型，该类型能够描述我们程序中可能发生的几乎任何类型的错误，只要错误的数据结构实现了 Rust 的通用 `Error` trait。
 
     ```rust
 
@@ -166,8 +164,8 @@
   code: >-
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=use%20std%3A%3Arc%3A%3ARc%3B%0A%0Astruct%20Pie%3B%0A%0Aimpl%20Pie%20%7B%0A%20%20%20%20fn%20eat(%26self)%20%7B%0A%20%20%20%20%20%20%20%20println!(%22tastes%20better%20on%20the%20heap!%22)%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20heap_pie%20%3D%20Rc%3A%3Anew(Pie)%3B%0A%20%20%20%20let%20heap_pie2%20%3D%20heap_pie.clone()%3B%0A%20%20%20%20let%20heap_pie3%20%3D%20heap_pie2.clone()%3B%0A%0A%20%20%20%20heap_pie3.eat()%3B%0A%20%20%20%20heap_pie2.eat()%3B%0A%20%20%20%20heap_pie.eat()%3B%0A%0A%20%20%20%20%2F%2F%20all%20reference%20count%20smart%20pointers%20are%20dropped%20now%0A%20%20%20%20%2F%2F%20the%20heap%20data%20Pie%20finally%20deallocates%0A%7D%0A
   content_markdown: >
-    `Rc` 是一个能将数据从栈移动到智能指针。      
-    它允许我们克隆其他`Rc`智能指针，这些指针都具有不可改变地借用放在堆上的数据的能力。    
+    `Rc` 是一个能将数据从栈移动到堆上的智能指针。
+    它允许我们克隆其他 `Rc` 智能指针，这些指针都具有不可改变地借用放在堆上的数据的能力。
 
 
     只有当最后一个智能指针被删除时，堆上的数据才会被释放。
@@ -176,19 +174,19 @@
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=use%20std%3A%3Acell%3A%3ARefCell%3B%0A%0Astruct%20Pie%20%7B%0A%20%20%20%20slices%3A%20u8%0A%7D%0A%0Aimpl%20Pie%20%7B%0A%20%20%20%20fn%20eat(%26mut%20self)%20%7B%0A%20%20%20%20%20%20%20%20println!(%22tastes%20better%20on%20the%20heap!%22)%3B%0A%20%20%20%20%20%20%20%20self.slices%20-%3D%201%3B%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20%2F%2F%20RefCell%20validates%20memory%20safety%20at%20runtime%0A%20%20%20%20%2F%2F%20notice%3A%20pie_cell%20is%20not%20mut!%0A%20%20%20%20let%20pie_cell%20%3D%20RefCell%3A%3Anew(Pie%7Bslices%3A8%7D)%3B%0A%20%20%20%20%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%2F%2F%20but%20we%20can%20borrow%20mutable%20references!%0A%20%20%20%20%20%20%20%20let%20mut%20mut_ref_pie%20%3D%20pie_cell.borrow_mut()%3B%0A%20%20%20%20%20%20%20%20mut_ref_pie.eat()%3B%0A%20%20%20%20%20%20%20%20mut_ref_pie.eat()%3B%0A%20%20%20%20%20%20%20%20%0A%20%20%20%20%20%20%20%20%2F%2F%20mut_ref_pie%20is%20dropped%20at%20end%20of%20scope%0A%20%20%20%20%7D%0A%20%20%20%20%0A%20%20%20%20%2F%2F%20now%20we%20can%20borrow%20immutably%20once%20our%20mutable%20reference%20drops%0A%20%20%20%20%20let%20ref_pie%20%3D%20pie_cell.borrow()%3B%0A%20%20%20%20%20println!(%22%7B%7D%20slices%20left%22%2Cref_pie.slices)%3B%0A%7D%0A
   content_markdown: >
     `RefCell` 是一个容器数据结构，通常由智能指针拥有，它接收数据并让我们借用可变或不可变引用来访问内部内容。
-    当您要求借用数据时，它通过在运行时强制执行 Rust 的内存安全规则来防止借用被滥用     
+    它通过在运行时强制执行 Rust 的内存安全规则来防止借用被滥用，当你请求借用内部数据时：
 
 
     **只有一个可变引用或多个不可变引用，但不能同时有！**  
 
 
-    如果你违反了这些规则，`RefCell` 将会panic。
+    如果你违反了这些规则，`RefCell` 将会 panic。
 - title: 线程间共享
   code: >-
     https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&code=use%20std%3A%3Async%3A%3AMutex%3B%0A%0Astruct%20Pie%3B%0A%0Aimpl%20Pie%20%7B%0A%20%20%20%20fn%20eat(%26self)%20%7B%0A%20%20%20%20%20%20%20%20println!(%22only%20I%20eat%20the%20pie%20right%20now!%22)%3B%0A%20%20%20%20%7D%0A%7D%0A%0Afn%20main()%20%7B%0A%20%20%20%20let%20mutex_pie%20%3D%20Mutex%3A%3Anew(Pie)%3B%0A%20%20%20%20%2F%2F%20let's%20borrow%20a%20locked%20immutable%20reference%20of%20pie%0A%20%20%20%20%2F%2F%20we%20have%20to%20unwrap%20the%20result%20of%20a%20lock%0A%20%20%20%20%2F%2F%20because%20it%20might%20fail%0A%20%20%20%20let%20ref_pie%20%3D%20mutex_pie.lock().unwrap()%3B%0A%20%20%20%20ref_pie.eat()%3B%0A%20%20%20%20%2F%2F%20locked%20reference%20drops%20here%2C%20and%20mutex%20protected%20value%20can%20be%20used%20by%20someone%20else%0A%7D%0A
   content_markdown: >
     `Mutex` 是一种容器数据结构，通常由智能指针持有，它接收数据并让我们借用对其中数据的可变和不可变引用。 
-    这可以防止借用被滥用，因为操作系统一次只限制一个 CPU 线程访问数据，阻塞其他线程，直到原线程完成其锁定的借用。     
+    这可以防止借用被滥用，因为操作系统一次只限制一个 CPU 线程访问数据，阻塞其他线程，直到原线程完成其锁定的借用。
 
 
     多线程超出了 Rust 之旅的范围，但 `Mutex` 是协调多个 CPU 线程访问相同数据的基本部分。    
@@ -203,7 +201,7 @@
     智能指针看起来可能会存在一些限制，但是我们可以做一些非常有用的结合。     
 
 
-    `Rc<Vec<Foo>>` - 允许克隆多个可以借用堆上不可变数据结构的相同向量的智能指针。    
+    `Rc<Vec<Foo>>` - 允许克隆多个可以借用堆上不可变数据结构的相同 vector 的智能指针。    
 
 
     `Rc<RefCell<Foo>>` - 允许多个智能指针可变/不可变地借用相同的结构`Foo`     
@@ -214,11 +212,10 @@
 
     内存细节：   
 
-    * 您会注意到一个包含许多这些组合的主题。 
-    使用不可变数据类型（可能由多个智能指针拥有）来修改内部数据。
-     这在 Rust 中被称为“内部可变性”模式。 这种模式让我们可以在运行时以与 Rust 的编译时检查相同的安全级别来改变内存使用规则。
+    * 你会注意到许多这些组合中有一个共同的主题，即使用不可变的数据类型（可能由多个智能指针拥有）来修改内部数据。这被称为 Rust 中的“内部可变性”模式。
+      这个模式允许我们在运行时改变内存使用的规则，同时保持与 Rust 的编译时检查相同的安全性。
 
 - title: 第8章 - 总结
   content_markdown: >
-    智能指针是 Rust编程中经常使用的，它可以让我们不必重新创建非常常见的内存使用范式。 有了它，您可以准备好应对最艰难的挑战了！
+    智能指针是 Rust 编程中经常使用的，它可以让我们不必重新创建非常常见的内存使用范式。 有了它，您可以准备好应对最艰难的挑战了！
     现在我们掌握了 Rust 的基础，让我们来谈谈如何编写更庞大的项目。 在下一章中，我们将摆脱一个文件包含所有代码的束缚。
